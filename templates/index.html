@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artemis - Assistente Estudantil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2e3b4e;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1e2a37;
+            border-radius: 8px;
+        }
+        .input-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .input-container input {
+            flex-grow: 1;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .input-container button {
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 4px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Artemis - Assistente Estudantil</h1>
+    <p>Você pode perguntar sobre tempo de estudo, notas ou estatísticas gerais!</p>
+
+    <form method="POST">
+        <div class="input-container">
+            <input type="text" name="user_input" placeholder="Digite sua pergunta aqui..." required>
+            <button type="submit">Enviar</button>
+        </div>
+    </form>
+
+    <div class="response">
+        <p><strong>Artemis:</strong> {{ response }}</p>
+    </div>
+</div>
+
+</body>
+</html>

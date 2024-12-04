@@ -1,46 +1,12 @@
-import customtkinter as ctk
 import pandas as pd
 import unicodedata
 import re
+from flask import Flask, render_template, request
 
+app = Flask(__name__)
 
 class Chatbot:
-    def __init__(self, master):
-        self.master = master
-        master.title("Artemis - Assistente Estudantil")
-        master.geometry("800x600")
-
-        # Configuração da janela
-        master.grid_columnconfigure(0, weight=1)
-        master.grid_rowconfigure(0, weight=1)
-        master.grid_rowconfigure(1, weight=0)
-        master.grid_rowconfigure(2, weight=0)
-
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("dark-blue")
-
-        # Área de texto
-        self.text_area = ctk.CTkTextbox(master, width=700, height=400, wrap="word")
-        self.text_area.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
-        self.text_area.insert(
-            ctk.END,
-            "Olá! Eu sou seu assistente de Desempenho Estudantil. Você pode fazer perguntas como:\n\n"
-            "1. Buscar por tempo de estudo: 'Mostrar estudantes que estudam [X] horas'\n"
-            "2. Buscar por notas: 'Mostrar estudantes com notas acima de [X]'\n"
-            "3. Estatísticas: 'Mostrar estatísticas gerais'\n\n"
-        )
-        self.text_area.configure(state="disabled")
-
-        # Campo de entrada
-        self.entry = ctk.CTkEntry(master, width=600, placeholder_text="Digite sua pergunta aqui...")
-        self.entry.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
-        self.entry.bind("<Return>", self.process_input)
-
-        # Botão de envio
-        self.send_button = ctk.CTkButton(master, text="Enviar", fg_color="blue", command=self.process_input)
-        self.send_button.grid(row=2, column=0, padx=20, pady=10)
-
-        # Carregar dados
+    def __init__(self):
         self.load_data()
 
     def load_data(self):
@@ -51,24 +17,6 @@ class Chatbot:
         except Exception as e:
             self.data = None
             print(f"Erro ao carregar os dados: {e}")
-
-    def process_input(self, event=None):
-        user_input = self.entry.get()
-        if not user_input:
-            return
-
-        self.text_area.configure(state="normal")
-        self.text_area.insert(ctk.END, "\nVocê: " + user_input + "\n")
-        self.text_area.configure(state="disabled")
-
-        response = self.get_response(user_input)
-
-        self.text_area.configure(state="normal")
-        self.text_area.insert(ctk.END, "Artemis: " + response + "\n")
-        self.text_area.see("end")
-        self.text_area.configure(state="disabled")
-
-        self.entry.delete(0, ctk.END)
 
     def normalize_string(self, s):
         if isinstance(s, str):
@@ -142,15 +90,18 @@ class Chatbot:
         )
 
 
-# Fim da classe Chatbot
+# Instanciando o chatbot
+chatbot = Chatbot()
 
-def main():
-    root = ctk.CTk()
-    chatbot = Chatbot(root)
-    root.mainloop()
+@app.route("/", methods=["GET", "POST"])
+def index():
+    response = ""
+    if request.method == "POST":
+        user_input = request.form["user_input"]
+        response = chatbot.get_response(user_input)
+    return render_template("index.html", response=response)
 
 
 if __name__ == "__main__":
-    main()
-
+    app.run(debug=True)
 
